@@ -1,0 +1,84 @@
+.about-wrapper {
+  background: #f8f9fa;
+  color: #212529; /* 🔥 default dark text */
+}
+
+/* HERO */
+.about-hero {
+  background: linear-gradient(135deg, #ff6b35, #ff914d);
+  color: white;
+  padding: 80px 0;
+}
+
+.about-hero h1,
+.about-hero p {
+  color: white;
+}
+
+/* GENERAL HEADINGS */
+.about-wrapper h2,
+.about-wrapper h3,
+.about-wrapper h4,
+.about-wrapper h5,
+.about-wrapper h6 {
+  color: #212529;
+}
+
+/* PARAGRAPHS */
+.about-wrapper p {
+  color: #555;
+}
+
+/* WHY SECTION */
+.why-section {
+  background: #ffffff;
+  color: #212529;
+}
+
+.about-card {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 15px;
+  transition: 0.3s ease;
+  height: 100%;
+  color: #212529;
+}
+
+.about-card h4 {
+  color: #000;
+}
+
+.about-card p {
+  color: #555;
+}
+
+.about-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* STATS */
+.stats-section {
+  background: #ffffff;
+  color: #212529;
+}
+
+.stats-section h2 {
+  color: #ff6b35;
+  font-weight: 700;
+}
+
+.stats-section p {
+  color: #666;
+}
+
+/* CTA */
+.about-cta {
+  background: #212529;
+  color: white;
+}
+
+.about-cta h2,
+.about-cta p {
+  color: white;
+}
