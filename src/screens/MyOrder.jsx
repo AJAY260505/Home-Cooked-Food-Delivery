@@ -58,15 +58,16 @@ export default function MyOrder() {
     fetchMyOrder();
   }, []);
 
-  /* ================================
-     SAFE TOTAL CALCULATION
-  ================================= */
+  /* ================= SAFE CALCULATION ================= */
 
   const calculateSubtotal = (items) => {
     return items.reduce((acc, item) => {
-      const price = Number(item.price || 0);
+      const unitPrice = Number(item.unitPrice || item.price || 0);
       const qty = Number(item.qty || 1);
-      return acc + price * qty;
+
+      if (isNaN(unitPrice) || isNaN(qty)) return acc;
+
+      return acc + unitPrice * qty;
     }, 0);
   };
 
@@ -76,37 +77,34 @@ export default function MyOrder() {
 
       <div className="myorder-wrapper">
         <div className="container py-5">
-          <h2 className="text-center mb-5 fw-bold">
-            🧾 My Orders
-          </h2>
+          <h2 className="text-center mb-5 fw-bold">🧾 My Orders</h2>
 
           {loading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" />
-              <p className="mt-3">Loading your order history...</p>
             </div>
           ) : error ? (
             <div className="alert alert-danger text-center">{error}</div>
           ) : Object.keys(groupedOrders).length === 0 ? (
             <div className="empty-orders text-center">
               <h5>No past orders found</h5>
-              <p>Start exploring and place your first order 🍽️</p>
             </div>
           ) : (
             Object.entries(groupedOrders)
-              .reverse()
+              .sort((a, b) => new Date(b[0]) - new Date(a[0]))
               .map(([date, items], index) => {
+
                 const subtotal = calculateSubtotal(items);
                 const delivery = subtotal < 299 ? 40 : 0;
                 const gst = subtotal * 0.05;
                 const total = subtotal + delivery + gst;
 
-                const orderId = `ORD-${index + 1001}`;
+                const orderId = `ORD-${1000 + index + 1}`;
 
                 return (
-                  <div key={index} className="order-box shadow-sm">
-                    
-                    {/* ================= HEADER ================= */}
+                  <div key={date} className="order-box shadow-sm">
+
+                    {/* HEADER */}
                     <div
                       className="order-header"
                       onClick={() =>
@@ -116,12 +114,8 @@ export default function MyOrder() {
                       }
                     >
                       <div>
-                        <h6 className="fw-semibold mb-1">
-                          {orderId}
-                        </h6>
-                        <small className="text-muted">
-                          {date}
-                        </small>
+                        <h6 className="fw-semibold mb-1">{orderId}</h6>
+                        <small className="text-muted">{date}</small>
                       </div>
 
                       <div className="order-summary">
@@ -134,53 +128,38 @@ export default function MyOrder() {
                       </div>
                     </div>
 
-                    {/* ================= EXPANDED SECTION ================= */}
+                    {/* DETAILS */}
                     {expandedOrder === date && (
                       <div className="order-details">
 
-                        {/* Timeline */}
-                        <div className="timeline">
-                          <div className="timeline-step active">
-                            Order Placed
-                          </div>
-                          <div className="timeline-step active">
-                            Preparing
-                          </div>
-                          <div className="timeline-step active">
-                            Out for Delivery
-                          </div>
-                          <div className="timeline-step active">
-                            Delivered
-                          </div>
-                        </div>
-
-                        {/* Items Grid */}
+                        {/* ITEMS */}
                         <div className="row g-4 mt-3">
-                          {items.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="col-12 col-sm-6 col-md-4 col-lg-3"
-                            >
-                              <div className="order-card">
-                                <img
-                                  src={item.img}
-                                  alt={item.name}
-                                />
-                                <div className="order-card-body">
-                                  <h6>{item.name}</h6>
-                                  <p>
-                                    Qty: {item.qty} | Size: {item.size}
-                                  </p>
-                                  <span className="price">
-                                    ₹{Number(item.price).toFixed(2)}
-                                  </span>
+                          {items.map((item, idx) => {
+
+                            const unitPrice = Number(item.unitPrice || item.price || 0);
+                            const qty = Number(item.qty || 1);
+                            const itemTotal = unitPrice * qty;
+
+                            return (
+                              <div key={idx} className="col-md-3">
+                                <div className="order-card">
+                                  <img src={item.img} alt={item.name} />
+                                  <div className="order-card-body">
+                                    <h6>{item.name}</h6>
+                                    <p>
+                                      Qty: {qty} | Size: {item.size}
+                                    </p>
+                                    <span className="price">
+                                      ₹{itemTotal.toFixed(2)}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
 
-                        {/* Bill Breakdown */}
+                        {/* BILL */}
                         <div className="bill-summary mt-4">
                           <div>
                             <span>Subtotal</span>

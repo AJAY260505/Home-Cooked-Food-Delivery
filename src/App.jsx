@@ -14,6 +14,9 @@ import Menu from './screens/Menu.jsx';
 import About from './screens/About.jsx';
 import Contact from './screens/Contact.jsx';
 import FAQ from './screens/FAQ.jsx';
+import PaymentSuccess from "./screens/PaymentSuccess";
+
+
 
 function App() {
   return (
@@ -31,6 +34,8 @@ function App() {
           <Route path="/myorder" element={<MyOrder />} />
           <Route path="/chef-dashboard" element={<ChefDashboard />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+
 
         </Routes>
       </Router>

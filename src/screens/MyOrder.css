@@ -255,3 +255,17 @@
     padding: 20px;
   }
 }
+.status.progress {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.timeline-step {
+  transition: all 0.4s ease;
+}
+
+.timeline-step.active {
+  background: #e9f9ef;
+  border-color: #28a745;
+  color: #198754;
+}
