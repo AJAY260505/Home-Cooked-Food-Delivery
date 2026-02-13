@@ -16,7 +16,6 @@ export default function MyOrder() {
       const userEmail = localStorage.getItem("userEmail");
       if (!userEmail) {
         setError("You need to login first");
-        setLoading(false);
         return;
       }
 
@@ -48,6 +47,7 @@ export default function MyOrder() {
 
       setGroupedOrders(grouped);
     } catch (err) {
+      console.error(err);
       setError("Failed to fetch orders");
     } finally {
       setLoading(false);
@@ -58,16 +58,11 @@ export default function MyOrder() {
     fetchMyOrder();
   }, []);
 
-  /* ================= SAFE CALCULATION ================= */
-
   const calculateSubtotal = (items) => {
     return items.reduce((acc, item) => {
-      const unitPrice = Number(item.unitPrice || item.price || 0);
+      const price = Number(item.unitPrice || item.price || 0);
       const qty = Number(item.qty || 1);
-
-      if (isNaN(unitPrice) || isNaN(qty)) return acc;
-
-      return acc + unitPrice * qty;
+      return acc + price * qty;
     }, 0);
   };
 
@@ -77,7 +72,9 @@ export default function MyOrder() {
 
       <div className="myorder-wrapper">
         <div className="container py-5">
-          <h2 className="text-center mb-5 fw-bold">🧾 My Orders</h2>
+          <h2 className="text-center mb-5 fw-bold text-dark">
+            🧾 My Orders
+          </h2>
 
           {loading ? (
             <div className="text-center py-5">
@@ -86,14 +83,13 @@ export default function MyOrder() {
           ) : error ? (
             <div className="alert alert-danger text-center">{error}</div>
           ) : Object.keys(groupedOrders).length === 0 ? (
-            <div className="empty-orders text-center">
+            <div className="empty-orders">
               <h5>No past orders found</h5>
             </div>
           ) : (
             Object.entries(groupedOrders)
               .sort((a, b) => new Date(b[0]) - new Date(a[0]))
               .map(([date, items], index) => {
-
                 const subtotal = calculateSubtotal(items);
                 const delivery = subtotal < 299 ? 40 : 0;
                 const gst = subtotal * 0.05;
@@ -102,7 +98,7 @@ export default function MyOrder() {
                 const orderId = `ORD-${1000 + index + 1}`;
 
                 return (
-                  <div key={date} className="order-box shadow-sm">
+                  <div key={date} className="order-box">
 
                     {/* HEADER */}
                     <div
@@ -114,7 +110,7 @@ export default function MyOrder() {
                       }
                     >
                       <div>
-                        <h6 className="fw-semibold mb-1">{orderId}</h6>
+                        <h6 className="fw-bold text-dark">{orderId}</h6>
                         <small className="text-muted">{date}</small>
                       </div>
 
@@ -122,7 +118,7 @@ export default function MyOrder() {
                         <span className="status delivered">
                           Delivered
                         </span>
-                        <h6 className="fw-bold text-primary mb-0">
+                        <h6 className="fw-bold text-success">
                           ₹{total.toFixed(2)}
                         </h6>
                       </div>
@@ -132,20 +128,34 @@ export default function MyOrder() {
                     {expandedOrder === date && (
                       <div className="order-details">
 
+                        {/* TIMELINE */}
+                        <div className="timeline">
+                          <div className="timeline-step active">Placed</div>
+                          <div className="timeline-step active">Preparing</div>
+                          <div className="timeline-step active">Out</div>
+                          <div className="timeline-step active">Delivered</div>
+                        </div>
+
                         {/* ITEMS */}
                         <div className="row g-4 mt-3">
                           {items.map((item, idx) => {
-
-                            const unitPrice = Number(item.unitPrice || item.price || 0);
+                            const price = Number(
+                              item.unitPrice || item.price || 0
+                            );
                             const qty = Number(item.qty || 1);
-                            const itemTotal = unitPrice * qty;
+                            const itemTotal = price * qty;
 
                             return (
                               <div key={idx} className="col-md-3">
                                 <div className="order-card">
-                                  <img src={item.img} alt={item.name} />
+                                  <img
+                                    src={item.img}
+                                    alt={item.name}
+                                  />
                                   <div className="order-card-body">
-                                    <h6>{item.name}</h6>
+                                    <h6 className="text-dark">
+                                      {item.name}
+                                    </h6>
                                     <p>
                                       Qty: {qty} | Size: {item.size}
                                     </p>

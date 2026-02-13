@@ -1,59 +1,71 @@
 /* ===============================
-   My Orders Page Layout
+   GLOBAL BACKGROUND
 ================================= */
 
-.myorder-wrapper {
-  background: linear-gradient(to bottom, #f8fafc, #eef2f7);
-  min-height: 100vh;
-  padding-bottom: 60px;
+body {
+  background: linear-gradient(to bottom right, #f4f7fb, #eef2f8);
+  font-family: "Segoe UI", sans-serif;
 }
 
 /* ===============================
-   Order Container Box
+   PAGE WRAPPER
+================================= */
+
+.myorder-wrapper {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ===============================
+   ORDER CONTAINER
 ================================= */
 
 .order-box {
   background: #ffffff;
-  border-radius: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 18px;
+  margin-bottom: 28px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   transition: all 0.3s ease;
+  border: 1px solid #eef1f6;
 }
 
 .order-box:hover {
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.08);
 }
 
 /* ===============================
-   Order Header
+   ORDER HEADER
 ================================= */
 
 .order-header {
-  padding: 22px 28px;
+  padding: 24px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: background 0.3s ease;
+  background: #ffffff;
+  transition: all 0.25s ease;
 }
 
 .order-header:hover {
-  background: #f9fafb;
+  background: #f8fafc;
 }
 
 .order-header h6 {
-  margin: 0;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
+  color: #1f2937;
 }
 
 .order-header small {
-  color: #6c757d;
+  color: #6b7280;
+  font-size: 0.85rem;
 }
 
 /* ===============================
-   Order Summary Right
+   ORDER SUMMARY
 ================================= */
 
 .order-summary {
@@ -61,16 +73,20 @@
 }
 
 .status {
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 6px 14px;
+  border-radius: 30px;
   font-size: 0.75rem;
   font-weight: 600;
-  display: inline-block;
 }
 
 .status.delivered {
-  background: #d4edda;
-  color: #198754;
+  background: #e6f7ee;
+  color: #1c7c54;
+}
+
+.status.progress {
+  background: #fff4e5;
+  color: #b45309;
 }
 
 .order-summary h6 {
@@ -80,81 +96,87 @@
 }
 
 /* ===============================
-   Expanded Order Details
+   EXPANDED SECTION
 ================================= */
 
 .order-details {
-  padding: 25px 30px;
-  background: #fafafa;
+  padding: 28px 30px;
+  background: #f9fbfd;
+  border-top: 1px solid #eef1f6;
   animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===============================
-   Timeline
+   TIMELINE
 ================================= */
 
 .timeline {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 25px;
+  align-items: center;
+  margin-bottom: 30px;
   position: relative;
 }
 
 .timeline::before {
   content: "";
   position: absolute;
-  top: 14px;
-  left: 0;
-  right: 0;
+  top: 18px;
+  left: 5%;
+  right: 5%;
   height: 4px;
-  background: #e9ecef;
+  background: #e5e7eb;
+  border-radius: 10px;
   z-index: 1;
 }
 
 .timeline-step {
   position: relative;
-  background: #ffffff;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
   z-index: 2;
-  border: 2px solid #dee2e6;
-  text-align: center;
+  background: #ffffff;
+  border: 2px solid #d1d5db;
+  border-radius: 30px;
+  padding: 8px 14px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
   min-width: 90px;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
 .timeline-step.active {
-  border-color: #28a745;
-  background: #e9f9ef;
-  color: #198754;
+  border-color: #16a34a;
+  background: #ecfdf5;
+  color: #15803d;
   font-weight: 600;
 }
 
 /* ===============================
-   Individual Order Card
+   ORDER CARD
 ================================= */
 
 .order-card {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.3s ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 .order-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .order-card img {
   width: 100%;
-  height: 170px;
+  height: 180px;
   object-fit: cover;
 }
 
@@ -164,71 +186,69 @@
 
 .order-card-body h6 {
   font-weight: 600;
+  color: #111827;
   margin-bottom: 6px;
 }
 
 .order-card-body p {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: #6b7280;
   margin-bottom: 8px;
 }
 
 .price {
-  font-weight: bold;
-  color: #198754;
+  font-weight: 700;
+  color: #16a34a;
   font-size: 0.95rem;
 }
 
 /* ===============================
-   Bill Summary
+   BILL SUMMARY
 ================================= */
 
 .bill-summary {
   background: #ffffff;
-  border-radius: 14px;
-  padding: 18px 22px;
-  margin-top: 20px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  padding: 22px;
+  margin-top: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
 }
 
 .bill-summary div {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 0.9rem;
+  color: #374151;
 }
 
 .bill-summary hr {
-  margin: 10px 0;
+  margin: 12px 0;
 }
 
 .bill-summary .fw-bold {
   font-size: 1rem;
+  color: #111827;
 }
 
 /* ===============================
-   Empty State
+   EMPTY STATE
 ================================= */
 
 .empty-orders {
   text-align: center;
-  padding: 90px 0;
-  color: #6c757d;
-}
-
-.empty-orders h5 {
-  font-weight: 600;
-  margin-bottom: 10px;
+  padding: 100px 0;
+  color: #6b7280;
 }
 
 /* ===============================
-   Responsive
+   RESPONSIVE
 ================================= */
 
 @media (max-width: 992px) {
   .timeline {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
   .timeline::before {
@@ -250,22 +270,4 @@
   .order-summary {
     text-align: left;
   }
-
-  .order-details {
-    padding: 20px;
-  }
-}
-.status.progress {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.timeline-step {
-  transition: all 0.4s ease;
-}
-
-.timeline-step.active {
-  background: #e9f9ef;
-  border-color: #28a745;
-  color: #198754;
 }
