@@ -3,27 +3,75 @@ import { useCart, useDispatchCart } from "../components/ContextReducer";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import "./Checkout.css";
 
 export default function Checkout() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const [coupon, setCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
 
   const cartItems = useCart();
   const dispatch = useDispatchCart();
   const navigate = useNavigate();
 
-  const totalAmount = cartItems.reduce(
-    (acc, item) => acc + Number(item.price),
+  /* ================================
+     SAFE CALCULATIONS
+  ================================= */
+
+  const subtotal = cartItems.reduce((acc, item) => {
+    const price = Number(item.unitPrice || item.price || 0);
+    const qty = Number(item.qty || 1);
+    return acc + price * qty;
+  }, 0);
+
+  const FREE_DELIVERY_LIMIT = 299;
+
+  const deliveryFee =
+    subtotal > 0 && subtotal < FREE_DELIVERY_LIMIT ? 40 : 0;
+
+  const remainingForFree =
+    subtotal < FREE_DELIVERY_LIMIT
+      ? FREE_DELIVERY_LIMIT - subtotal
+      : 0;
+
+  const deliveryProgress = Math.min(
+    (subtotal / FREE_DELIVERY_LIMIT) * 100,
+    100
+  );
+
+  const gst = subtotal * 0.05;
+
+  const totalAmount = Math.max(
+    subtotal + deliveryFee + gst - discount,
     0
   );
 
+  /* ================================
+     COUPON SYSTEM
+  ================================= */
+
+  const applyCoupon = () => {
+    const code = coupon.trim().toUpperCase();
+
+    if (code === "SAVE10") {
+      setDiscount(subtotal * 0.1);
+    } else if (code === "FLAT50") {
+      setDiscount(50);
+    } else if (code === "WELCOME") {
+      setDiscount(subtotal * 0.05);
+    } else {
+      alert("Invalid coupon");
+      setDiscount(0);
+    }
+  };
+
+  /* ================================
+     RAZORPAY LOADER
+  ================================= */
+
   const loadRazorpay = () => {
     return new Promise((resolve) => {
-      if (window.Razorpay) {
-        resolve(true);
-        return;
-      }
-
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => resolve(true);
@@ -32,13 +80,17 @@ export default function Checkout() {
     });
   };
 
+  /* ================================
+     HANDLE PAYMENT
+  ================================= */
+
   const handlePayment = async () => {
-    if (!address) {
+    if (!address.trim()) {
       alert("Please enter delivery address");
       return;
     }
 
-    if (totalAmount === 0) {
+    if (totalAmount <= 0) {
       alert("Cart is empty");
       return;
     }
@@ -53,7 +105,6 @@ export default function Checkout() {
     }
 
     try {
-      // 🔥 Create Razorpay order from backend
       const orderRes = await fetch(
         "http://localhost:5000/api/payment/create-order",
         {
@@ -67,7 +118,6 @@ export default function Checkout() {
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
- // ✅ from .env
         amount: orderData.amount,
         currency: "INR",
         name: "ComfortEats",
@@ -75,7 +125,6 @@ export default function Checkout() {
         order_id: orderData.id,
 
         handler: async function (response) {
-          // ✅ Save order after payment success
           await fetch("http://localhost:5000/api/orderData", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -83,14 +132,14 @@ export default function Checkout() {
               order_data: cartItems,
               email: localStorage.getItem("userEmail"),
               order_date: new Date().toLocaleString(),
-              address: address,
+              address,
               payment_id: response.razorpay_payment_id,
+              total: totalAmount,
             }),
           });
 
           dispatch({ type: "DROP" });
-          alert("Payment Successful 🎉 Order Placed!");
-          navigate("/");
+          navigate("/payment-success");
         },
 
         prefill: {
@@ -99,29 +148,34 @@ export default function Checkout() {
         },
 
         theme: {
-          color: "#3399cc",
+          color: "#ff6b35",
         },
       };
 
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert("Something went wrong!");
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed");
     }
 
     setLoading(false);
   };
+
+  /* ================================
+     UI
+  ================================= */
 
   return (
     <>
       <Navbar />
 
       <div className="container py-5">
-        <h2>Checkout</h2>
+        <h2 className="mb-4">Checkout</h2>
 
+        {/* ADDRESS */}
         <div className="mb-4">
-          <label>Delivery Address</label>
+          <label className="form-label">Delivery Address</label>
           <textarea
             className="form-control"
             rows="3"
@@ -130,10 +184,79 @@ export default function Checkout() {
           />
         </div>
 
-        <h4>Total Amount: ₹{totalAmount}</h4>
+        {/* FREE DELIVERY PROGRESS */}
+        {subtotal > 0 && (
+          <div className="free-delivery-box">
+            {remainingForFree > 0 ? (
+              <>
+                <p>
+                  Add ₹{remainingForFree.toFixed(2)} more for
+                  <strong> FREE Delivery 🚚</strong>
+                </p>
+
+                <div className="progress-bar-wrapper">
+                  <div
+                    className="progress-bar-fill"
+                    style={{ width: `${deliveryProgress}%` }}
+                  ></div>
+                </div>
+              </>
+            ) : (
+              <p className="free-unlocked">
+                🎉 Free Delivery Unlocked!
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* COUPON */}
+        <div className="d-flex gap-2 mb-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter coupon"
+            value={coupon}
+            onChange={(e) => setCoupon(e.target.value)}
+          />
+          <button className="btn btn-dark" onClick={applyCoupon}>
+            Apply
+          </button>
+        </div>
+
+        {/* SUMMARY */}
+        <div className="border rounded p-4 bg-light shadow-sm">
+          <div className="d-flex justify-content-between">
+            <span>Subtotal</span>
+            <span>₹{subtotal.toFixed(2)}</span>
+          </div>
+
+          <div className="d-flex justify-content-between">
+            <span>Delivery Fee</span>
+            <span>₹{deliveryFee.toFixed(2)}</span>
+          </div>
+
+          <div className="d-flex justify-content-between">
+            <span>GST (5%)</span>
+            <span>₹{gst.toFixed(2)}</span>
+          </div>
+
+          {discount > 0 && (
+            <div className="d-flex justify-content-between text-success">
+              <span>Discount</span>
+              <span>- ₹{discount.toFixed(2)}</span>
+            </div>
+          )}
+
+          <hr />
+
+          <div className="d-flex justify-content-between fw-bold fs-5">
+            <span>Total</span>
+            <span>₹{totalAmount.toFixed(2)}</span>
+          </div>
+        </div>
 
         <button
-          className="btn btn-success mt-3"
+          className="btn btn-success mt-4 w-100"
           onClick={handlePayment}
           disabled={loading}
         >
