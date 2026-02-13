@@ -37,37 +37,51 @@ export default function Home() {
         <h2 className="section-title">Popular Categories</h2>
 
         <div className="categories-grid">
-          <div className="category-card">
+
+          <Link
+            to="/menu?category=North Indian"
+            className="category-card"
+          >
             <img
               src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d"
               alt="North Indian"
             />
             <h3>North Indian</h3>
-          </div>
+          </Link>
 
-          <div className="category-card">
+          <Link
+            to="/menu?category=South Indian"
+            className="category-card"
+          >
             <img
               src="https://images.unsplash.com/photo-1605478371310-a9f1e96b4ff4"
               alt="South Indian"
             />
             <h3>South Indian</h3>
-          </div>
+          </Link>
 
-          <div className="category-card">
+          <Link
+            to="/menu?category=Chinese"
+            className="category-card"
+          >
             <img
               src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1"
               alt="Chinese"
             />
             <h3>Chinese</h3>
-          </div>
+          </Link>
 
-          <div className="category-card">
+          <Link
+            to="/menu?category=Desserts"
+            className="category-card"
+          >
             <img
               src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092"
               alt="Desserts"
             />
             <h3>Desserts</h3>
-          </div>
+          </Link>
+
         </div>
       </section>
 
