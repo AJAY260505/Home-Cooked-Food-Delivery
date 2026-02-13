@@ -1,6 +1,6 @@
 # Home-Cooked Food Delivery Platform
 
-This is a full-stack **MERN** (MongoDB, Express.js, React, Node.js) project developed as part of my internship at **Infotact Solutions**.
+This is a full-stack **MERN** (MongoDB, Express.js, React, Node.js) project developed as part of my internship.
 
 ## 🔥 Features
 
