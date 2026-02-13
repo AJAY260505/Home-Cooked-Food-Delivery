@@ -58,8 +58,16 @@ export default function MyOrder() {
     fetchMyOrder();
   }, []);
 
-  const calculateTotal = (items) => {
-    return items.reduce((acc, item) => acc + item.price, 0);
+  /* ================================
+     SAFE TOTAL CALCULATION
+  ================================= */
+
+  const calculateSubtotal = (items) => {
+    return items.reduce((acc, item) => {
+      const price = Number(item.price || 0);
+      const qty = Number(item.qty || 1);
+      return acc + price * qty;
+    }, 0);
   };
 
   return (
@@ -68,31 +76,37 @@ export default function MyOrder() {
 
       <div className="myorder-wrapper">
         <div className="container py-5">
-          <h2 className="text-center mb-5 fw-bold">My Orders</h2>
+          <h2 className="text-center mb-5 fw-bold">
+            🧾 My Orders
+          </h2>
 
           {loading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" />
-              <p className="mt-3">Loading your delicious history...</p>
+              <p className="mt-3">Loading your order history...</p>
             </div>
           ) : error ? (
             <div className="alert alert-danger text-center">{error}</div>
           ) : Object.keys(groupedOrders).length === 0 ? (
-            <div className="empty-orders">
+            <div className="empty-orders text-center">
               <h5>No past orders found</h5>
-              <p>Start exploring our menu and place your first order!</p>
+              <p>Start exploring and place your first order 🍽️</p>
             </div>
           ) : (
             Object.entries(groupedOrders)
               .reverse()
               .map(([date, items], index) => {
-                const total = calculateTotal(items);
+                const subtotal = calculateSubtotal(items);
+                const delivery = subtotal < 299 ? 40 : 0;
+                const gst = subtotal * 0.05;
+                const total = subtotal + delivery + gst;
+
                 const orderId = `ORD-${index + 1001}`;
 
                 return (
                   <div key={index} className="order-box shadow-sm">
                     
-                    {/* ORDER HEADER */}
+                    {/* ================= HEADER ================= */}
                     <div
                       className="order-header"
                       onClick={() =>
@@ -102,8 +116,8 @@ export default function MyOrder() {
                       }
                     >
                       <div>
-                        <h6 className="mb-1 fw-semibold">
-                          Order ID: {orderId}
+                        <h6 className="fw-semibold mb-1">
+                          {orderId}
                         </h6>
                         <small className="text-muted">
                           {date}
@@ -111,19 +125,37 @@ export default function MyOrder() {
                       </div>
 
                       <div className="order-summary">
-                        <span className="badge bg-success">
+                        <span className="status delivered">
                           Delivered
                         </span>
-                        <h6 className="mb-0 fw-bold text-primary">
-                          ₹{total}
+                        <h6 className="fw-bold text-primary mb-0">
+                          ₹{total.toFixed(2)}
                         </h6>
                       </div>
                     </div>
 
-                    {/* ORDER ITEMS (Expandable) */}
+                    {/* ================= EXPANDED SECTION ================= */}
                     {expandedOrder === date && (
-                      <div className="order-items">
-                        <div className="row g-4 mt-2">
+                      <div className="order-details">
+
+                        {/* Timeline */}
+                        <div className="timeline">
+                          <div className="timeline-step active">
+                            Order Placed
+                          </div>
+                          <div className="timeline-step active">
+                            Preparing
+                          </div>
+                          <div className="timeline-step active">
+                            Out for Delivery
+                          </div>
+                          <div className="timeline-step active">
+                            Delivered
+                          </div>
+                        </div>
+
+                        {/* Items Grid */}
+                        <div className="row g-4 mt-3">
                           {items.map((item, idx) => (
                             <div
                               key={idx}
@@ -140,13 +172,35 @@ export default function MyOrder() {
                                     Qty: {item.qty} | Size: {item.size}
                                   </p>
                                   <span className="price">
-                                    ₹{item.price}
+                                    ₹{Number(item.price).toFixed(2)}
                                   </span>
                                 </div>
                               </div>
                             </div>
                           ))}
                         </div>
+
+                        {/* Bill Breakdown */}
+                        <div className="bill-summary mt-4">
+                          <div>
+                            <span>Subtotal</span>
+                            <span>₹{subtotal.toFixed(2)}</span>
+                          </div>
+                          <div>
+                            <span>Delivery</span>
+                            <span>₹{delivery.toFixed(2)}</span>
+                          </div>
+                          <div>
+                            <span>GST (5%)</span>
+                            <span>₹{gst.toFixed(2)}</span>
+                          </div>
+                          <hr />
+                          <div className="fw-bold">
+                            <span>Total Paid</span>
+                            <span>₹{total.toFixed(2)}</span>
+                          </div>
+                        </div>
+
                       </div>
                     )}
                   </div>
