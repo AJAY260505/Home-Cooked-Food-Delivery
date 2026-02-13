@@ -1,0 +1,218 @@
+/* ===============================
+   Home Page Layout
+================================= */
+
+.home-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* ===============================
+   Carousel Section
+================================= */
+
+.carousel-section {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+}
+
+.carousel-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  inset: 0;
+  z-index: 1;   /* Lower than content */
+}
+
+/* ===============================
+   Search Overlay
+================================= */
+
+.search-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  z-index: 2;   /* Above overlay */
+  padding: 0 2rem;
+}
+
+.search-input {
+  width: 100%;
+  background: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 18px 26px;
+  font-size: 1.1rem;
+  min-height: 60px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* ===============================
+   Main Content Section
+================================= */
+
+.home-content {
+  padding: 3rem 1rem 4rem;
+  background: #ffffff;
+  margin-top: 0;            /* Removed negative margin */
+  position: relative;
+  z-index: 3;               /* Above everything */
+  border-radius: 0;
+}
+
+/* ===============================
+   Loading State
+================================= */
+
+.loading-container {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.loading-spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* ===============================
+   Category Section
+================================= */
+
+.category-section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #007bff;
+  transition: all 0.3s ease;
+}
+
+.category-section:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.category-title {
+  color: #333;
+  font-size: 1.7rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.category-divider {
+  border: none;
+  height: 1px;
+  background: #e9ecef;
+  margin: 1rem 0 2rem;
+}
+
+/* ===============================
+   Food Grid
+================================= */
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ===============================
+   Responsive Design
+================================= */
+
+@media (max-width: 992px) {
+  .carousel-section {
+    height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-section {
+    height: 350px;
+  }
+
+  .search-input {
+    font-size: 1rem;
+    padding: 14px 20px;
+    min-height: 50px;
+  }
+
+  .home-content {
+    padding: 2rem 1rem 3rem;
+  }
+
+  .category-section {
+    padding: 1.5rem;
+  }
+
+  .category-title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .search-overlay {
+    padding: 0 1rem;
+  }
+
+  .food-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-section {
+  position: relative;
+  height: 90vh;
+  background: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80")
+    center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+  position: relative;
+  color: white;
+  z-index: 2;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
